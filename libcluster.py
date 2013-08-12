@@ -144,9 +144,14 @@ class Cluster:
             return False
         sleep(5)
         debug('check migration status')
-        debug('ssh {0} \'echo "info migrate" | socat - UNIX-CONNECT:/tmp/{1}.sock\''.format(host_name, guest_name))
-        out = subprocess.getstatusoutput('ssh {0} \'echo "info migrate" | socat - UNIX-CONNECT:/tmp/{1}.sock\''.format(host_name, guest_name))
-        debug(out)
+        
+        while True:
+            debug('ssh {0} \'echo "info migrate" | socat - UNIX-CONNECT:/tmp/{1}.sock\''.format(host_name, guest_name))
+            out = subprocess.getstatusoutput('ssh {0} \'echo "info migrate" | socat - UNIX-CONNECT:/tmp/{1}.sock\''.format(host_name, guest_name))
+            if 'active' in out[1]:
+                sleep (5)
+            else:
+                break
         
         if 'Migration status: completed' in out[1]:
             print('Migration competed')
