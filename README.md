@@ -43,6 +43,7 @@ Export the key on every host:
   ssh-copy-id -i /home/user/.ssh/id_rsa_vmcli.pub hostname
   
 Create an ssh_config file adding host configuration like this:
+
     Host test001
         User root
         hostname 192.168.2.41
@@ -54,6 +55,7 @@ Create an ssh_config file adding host configuration like this:
         IdentityFile ~/.ssh/id_rsa_vmcli
     ...
 Create the default cluster configuration file (see examples).
+
     /etc/vmcli/etc/default.conf
 
 
@@ -62,24 +64,28 @@ Usage
 =====
 
 Show all options
+
   cd vmcli
   ./vmcli --help
 
 To check if all host are reachable by ssh
+
   ./vmcli cluster show
 
 Select cluster
+
   ./vmcli --cluster=production cluster show
 
 Use non standard configuration directory
   ./vmcli.py --config=~/myconf --cluster=test cluster show
   
 Sueggestions:
+
   link the vmcli to your path:
-    ln -s /home/user/vmcli/vmcli.py /usr/local/bin
+  ln -s /home/user/vmcli/vmcli.py /usr/local/bin
     
   you may whant to create an alias if you are not using default paths
-    alias vmcli='vmcli.py --config=~/myconf --cluster=test'
+  alias vmcli='vmcli.py --config=~/myconf --cluster=test'
 
   
   
