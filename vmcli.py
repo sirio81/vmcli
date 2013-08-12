@@ -5,30 +5,37 @@ from libguest import Guest
 from time import sleep
 from docopt import docopt
 import sys
+import os
 
 
 h = '''
 Usage:
-  vmcli.py [--config=<path>] guest find <guest_name>
-  vmcli.py [--config=<path>] guest start <guest_name> [<host_name>]
-  vmcli.py [--config=<path>] guest start_and_show <guest_name> [<host_name>]
-  vmcli.py [--config=<path>] guest shutdown <guest_name>
-  vmcli.py [--config=<path>] guest kill <guest_name>
-  vmcli.py [--config=<path>] guest stop <guest_name>
-  vmcli.py [--config=<path>] guest cont <guest_name>
-  vmcli.py [--config=<path>] guest info <guest_name>
-  vmcli.py [--config=<path>] guest migrate <guest_name> <host_name>
-  vmcli.py [--config=<path>] guest show <guest_name>
-  vmcli.py [--config=<path>] host info <host_name>
-  vmcli.py [--config=<path>] host shutdown_guests <host_name>
-  vmcli.py [--config=<path>] cluster info
-  vmcli.py [--config=<path>] cluster show
-  vmcli.py [--config=<path>] cluster poweroff
-  vmcli.py [--config=<path>] cluster shutdown_guests
-  
+  vmcli.py  guest find <guest_name>
+  vmcli.py  guest start <guest_name> [<host_name>]
+  vmcli.py  guest start_and_show <guest_name> [<host_name>]
+  vmcli.py  guest shutdown <guest_name>
+  vmcli.py  guest kill <guest_name>
+  vmcli.py  guest stop <guest_name>
+  vmcli.py  guest cont <guest_name>
+  vmcli.py  guest info <guest_name>
+  vmcli.py  guest migrate <guest_name> <host_name>
+  vmcli.py  guest show <guest_name>
+  vmcli.py  host info <host_name>
+  vmcli.py  host shutdown_guests <host_name>
+  vmcli.py  host show_guests <host_name>
+  vmcli.py  cluster info
+  vmcli.py  [--conf=<path>] [--cluster=<name>] cluster show
+  vmcli.py  cluster show_guests
+  vmcli.py  cluster poweroff
+  vmcli.py  cluster shutdown_guests
+  vmcli.py  [-h | --help]
+  vmcli.py  [--verions]
+    
 Options:
-  -h --help     Show this screen.
-  --version     Show version.
+  -h --help         Show this screen.
+  --version         Show version.
+  --cluster=name    Choose the cluster to user [default: pippo]
+  --conf=path       Change path of the main configuration directory [default: /etc/kvm]
 '''
 
 if __name__ == '__main__':
@@ -36,9 +43,7 @@ if __name__ == '__main__':
     #print(arg)
     #sys.exit()
 
-    
-    config_file = 'etc/vmcli.conf' if arg['--config'] is None else arg['--config']
-    c = Cluster(config_file)
+    c = Cluster(os.path.join(arg['--conf'], arg['--cluster']) + '.conf')
     
     if arg['guest']:
         if arg['find']:

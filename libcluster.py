@@ -87,7 +87,8 @@ class Cluster:
             
         # Istantiante guest from configuration file
         try:
-            f = open(os.path.join(self.cluster_options['guests_config_dir'],guest_name + '.conf'), 'r')
+            #totest
+            f = open(os.path.join(self.cluster_options['conf'], 'guests', guest_name) + '.conf', 'r')
         except:
             error('Gest configuration file not readable')
         all_opt = parse_conf(f.read().strip())
