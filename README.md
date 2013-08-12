@@ -77,6 +77,7 @@ Select cluster
     ./vmcli --cluster=production cluster show
 
 Use non standard configuration directory
+
     ./vmcli.py --config=~/myconf --cluster=test cluster show
   
 Sueggestions:
