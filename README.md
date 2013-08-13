@@ -9,19 +9,27 @@ Description
 ===========
 
 This project is meant to be used to quickly manage virtual machines by command line.
+
 Two or more hosts using a shared storage can be managed by your laptop, as long you have root access to them by ssh.
+
 The storage may be a nfs folder, a sheepdog cluster or whatever.
+
 You can then easily start a guest, show it's vnc, migrate it to another host, shut id down and more.
+
 Before starting a guest, several controls are performed in order to:
-  check if the host has enough resources (ram and cpu) to start the guest;
-  check if the guest is already running on another host, to avoid virtual disk corruption;
-  check if a mac address or a virtual disk is already used by another running guest (due to user configuration error).
+
+  - check if the host has enough resources (ram and cpu) to start the guest;
+  - check if the guest is already running on another host, to avoid virtual disk corruption;
+  - check if a mac address or a virtual disk is already used by another running guest (due to user configuration error).
+  
 You don't necessarily need to choose a host for starting guest, it will be automatically chosen.
+
 Guest's configuration files do not have their own syntax, simply write down qemu options (one per line).
 
 Virtual disk file are not managed by the vmcli, so you have to create / delete them by you own.
 
 @Developers:
+
 'vmcli' is in fact an application of the libraries it's shipped with.
 You may want to create you own project using the classes Guest, Host, Cluster
 
