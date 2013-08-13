@@ -10,6 +10,7 @@ from libhost import Guest
 class Cluster:
     def __init__(self,config_file, cluster_name):
         options_allowed = ['host_names', 'pssh_time_out', 'bin', 'vnc_over_ssh', 'guests_shutdown_delay', 'migration_ports']
+        tempdir = '/tmp/vmcli'
         if not os.path.exists(config_file): error('clusters configuration file is missing')
         config = configparser.ConfigParser()
         config.read(config_file)
@@ -21,7 +22,12 @@ class Cluster:
         for option in self.cluster_options:
             if option not in options_allowed:
                 error(option + ': wrong option. Check you configuration file.')
-        d = os.path.join('/tmp/vmcli', os.getlogin())
+        if not os.path.exists(tempdir):
+            os.makedirs(tempdir)
+            os.chmod(tempdir, 0o777)
+        d = os.path.join(tempdir, subprocess.getstatusoutput('whoami')[1])
+        if not os.path.exists(d):
+            os.makedirs(d)
         self.pssh = {
             'out': os.path.join(d, 'out'),
             'err': os.path.join(d, 'err'),
@@ -29,7 +35,6 @@ class Cluster:
             'timeout' : self.cluster_options['pssh_time_out']
             }
         self.hosts = {}
-        if not os.path.exists(d): os.makedirs(d)
         f = open(self.pssh['host_file'], 'w')
         f.write(self.cluster_options['host_names'].replace(',','\n'))
         f.close()
@@ -161,7 +166,7 @@ class Cluster:
         if subprocess.getstatusoutput('ssh {0} \'echo "migrate -d tcp:{1}:{2}" | socat - UNIX-CONNECT:/tmp/{3}.sock\''.format(host_name, to_host, incoming_port, guest_name))[0] != 0:
             return False
         sleep(5)
-        debug('check migration status')
+        debug('checking migration status')
         
         while True:
             debug('ssh {0} \'echo "info migrate" | socat - UNIX-CONNECT:/tmp/{1}.sock\''.format(host_name, guest_name))
