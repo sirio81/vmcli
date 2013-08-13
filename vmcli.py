@@ -34,7 +34,7 @@ Usage:
 Options:
   -h --help         Show this screen.
   --version         Show version.
-  --cluster=name    Choose the cluster to user [default: pippo]
+  --cluster=name    Choose the cluster to use
   --conf=path       Change path of the main configuration directory [default: /etc/vmcli]
 '''
 
