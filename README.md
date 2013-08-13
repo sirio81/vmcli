@@ -24,11 +24,17 @@ Convention
 ==========
  - Default configuration directory is /etc/vmcli.
  - For each cluster you wish to manage:
-  * create a configuration file like /etc/vmcli/<cluster_name>.conf.
-  * Create a directory for guests configuration files: /etc/vmcli/guests/<cluster_name>/.
- - Guest's configuration file has to set the option '-name'.
- - The guest name has and it's configuration file name must match.
+  * add a section editing /etc/vmcli/clusters.conf;
+  * create a directory for guests configuration files: /etc/vmcli/guests/<cluster_name>/.
+ - In guest's configuration file you must set the option '-name'.
+ - The guest name has and the guest configuration file name must match.
+ 
+   I.e. /etc/vmcli/guests/debian.conf
+        --name debian
+        
  - It has to be possible to connect to hosts by ssh without specifying user or port (see Cluster Setup).
+ - 'socat'; 'parallel-ssh' and all other command used by the vmcli have to be io the PATH of your user.
+ - All hosts use the same qemy/kvm command.
 
 
 
@@ -85,9 +91,9 @@ Sueggestions:
     link the vmcli to your path:
     ln -s /home/user/vmcli/vmcli.py /usr/local/bin
     
-you may whant to create an alias if you are not using default paths
+You may whant to create an alias for the cluster you use the most (it may be just one)
 
-    alias vmcli='vmcli.py --config=~/myconf --cluster=test'
+    alias vmcli='vmcli.py --cluster=test'
 
   
   
@@ -98,9 +104,6 @@ Cluster Configuration File
 
     [cluster]
     host_names = host01,host02,host03
-    pssh_host_file = /tmp/pssh_vr.conf
-    pssh_out_dir = /tmp/vmcli/out
-    pssh_err_dir = /tmp/vmcli/err
     pssh_time_out = 15
     bin = qemu-system-x86_64
     vnc_over_ssh = false
@@ -121,3 +124,4 @@ Guest Configuration File
     -daemonize
     #-net nic,macaddr=52:54:00:03:5b:29 -net tap
     #-netdev type=tap,id=lan0,script=no,vhost=on -device virtio-net-pci,netdev=lan0,mac=52:54:00:03:5b:29
+    
