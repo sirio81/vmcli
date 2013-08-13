@@ -9,9 +9,18 @@ from libhost import Guest
 
 class Cluster:
     def __init__(self,config_file, cluster_name):
+        options_allowed = ['host_names', 'pssh_time_out', 'bin', 'vnc_over_ssh', 'guests_shutdown_delay', 'migration_ports']
+        if not os.path.exists(config_file): error('clusters configuration file is missing')
         config = configparser.ConfigParser()
         config.read(config_file)
-        self.cluster_options = dict(config.items(cluster_name))
+        try:
+            self.cluster_options = dict(config.items(cluster_name))
+        except:
+            error('You chose a wrong cluster')
+        # Check if the option in the configuration file have been written correctly
+        for option in self.cluster_options:
+            if option not in options_allowed:
+                error(option + ': wrong option. Check you configuration file.')
         d = os.path.join('/tmp/vmcli', os.getlogin())
         self.pssh = {
             'out': os.path.join(d, 'out'),
@@ -87,7 +96,7 @@ class Cluster:
         '''It calls the guest method to start the guest but it checks first if
         the target host has the necessary resources.
         If not target host is given, one will be chosen.
-        It returns the host host name if the guest starts corretly,
+        It returns the host host name if the guest starts correctly,
         otherwise returns None'''
 
         host_name =  self.guest_find(guest_name)
