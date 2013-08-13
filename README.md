@@ -76,11 +76,11 @@ Show all options
 
 To check if all host are reachable by ssh
 
-    ./vmcli cluster show
+    ./vmcli --cluster=test cluster show
 
-Select cluster
+Start a guest and show it's vnc
 
-    ./vmcli --cluster=production cluster show
+    ./vmcli --cluster=test guest start_and_show debian
 
 Use non standard configuration directory
 
@@ -88,15 +88,16 @@ Use non standard configuration directory
   
 Sueggestions:
 
-    link the vmcli to your path:
+link the vmcli to your path, you can run the command everywere:
+
     ln -s /home/user/vmcli/vmcli.py /usr/local/bin
     
-You may whant to create an alias for the cluster you use the most (it may be just one)
+You may whant to create an alias for the cluster you use the most (it may be just one).
 
-    alias vmcli='vmcli.py --cluster=test'
+    alias vmcli='vmcli.py --cluster=production'
 
-  
-  
+
+
 Examples
 ========
 
