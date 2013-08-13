@@ -89,12 +89,12 @@ To simplify code and configuration we assume it's possible to connect to a clust
 
 Create a pair of ssh keys:
 
-  ssh-keygen -t rsa 
-  (you may choose a different file name like /home/user/.ssh/id_rsa_vmcli)
+    ssh-keygen -t rsa 
+    (you may choose a different file name like /home/user/.ssh/id_rsa_vmcli)
   
 Export the key on every host: 
 
-  ssh-copy-id -i /home/user/.ssh/id_rsa_vmcli.pub hostname
+    ssh-copy-id -i /home/user/.ssh/id_rsa_vmcli.pub hostname
   
 Create an ssh_config file adding host configuration like this:
 
