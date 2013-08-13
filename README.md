@@ -88,10 +88,12 @@ ssh is at the base of the project.
 To simplify code and configuration we assume it's possible to connect to a cluster host by 'ssh hostname'.
 
 Create a pair of ssh keys:
+
   ssh-keygen -t rsa 
   (you may choose a different file name like /home/user/.ssh/id_rsa_vmcli)
   
 Export the key on every host: 
+
   ssh-copy-id -i /home/user/.ssh/id_rsa_vmcli.pub hostname
   
 Create an ssh_config file adding host configuration like this:
@@ -107,7 +109,7 @@ Create an ssh_config file adding host configuration like this:
         IdentityFile ~/.ssh/id_rsa_vmcli
     ...
     
-Try to login by ssh on all host before continuing.
+Make sure you can login by ssh on all host without being asked for password or fingerprint before continuing.
 
 Create the a cluster configuration file (see examples).
 
