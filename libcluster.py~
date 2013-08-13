@@ -36,7 +36,7 @@ class Cluster:
     def query_hosts(self):
         '''Contact all hosts and write output to file
         '''
-        parallel_ssh = 'parallel-ssh -h {} -o {} -e {} -t {} '.format(self.pssh['host_file'], self.pssh['out'], self.pssh['err'], self.pssh['timeout'])
+        parallel_ssh = 'parallel-ssh -h {} -o {} -e {} -t {} '.format(self.pssh['host_file'], self.pssh['out'], self.pssh['err'], )
         os.system('[ -d {0} ] && rm -r {0}; sync'.format((self.pssh['out'])))
         os.system('[ -d {0} ] && rm -r {0}; sync'.format((self.pssh['err'])))
         cmd = ['cat /proc/cpuinfo', 'free -m', 'pgrep -fl qemu-system-x86_64 | grep -v bash', 'uptime']
