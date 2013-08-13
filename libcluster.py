@@ -8,14 +8,17 @@ from libhost import Guest
 
 
 class Cluster:
-    def __init__(self,config_file, cluster_name):
+    def __init__(self,conf_dir, cluster_name):
+        self.name = cluster_name
+        self.conf_dir = conf_dir
         options_allowed = ['host_names', 'pssh_time_out', 'bin', 'vnc_over_ssh', 'guests_shutdown_delay', 'migration_ports']
         tempdir = '/tmp/vmcli'
+        config_file = os.path.join(self.conf_dir, 'clusters.conf')
         if not os.path.exists(config_file): error('clusters configuration file is missing')
         config = configparser.ConfigParser()
         config.read(config_file)
         try:
-            self.cluster_options = dict(config.items(cluster_name))
+            self.cluster_options = dict(config.items(self.name))
         except:
             error('You chose a wrong cluster')
         # Check if the option in the configuration file have been written correctly
@@ -111,7 +114,7 @@ class Cluster:
         # Istantiante guest from configuration file
         try:
             #totest
-            f = open(os.path.join(self.cluster_options['conf'], 'guests', guest_name) + '.conf', 'r')
+            f = open(os.path.join(self.conf_dir, 'guests', self.name, guest_name) + '.conf', 'r')
         except:
             error('Gest configuration file not readable')
         all_opt = parse_conf(f.read().strip())

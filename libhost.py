@@ -7,7 +7,7 @@ class Host:
         self.guests = {}
         self.name = name
         self.cluster_options = cluster_options
-        d = os.path.join('/tmp/vmcli', os.getlogin())
+        d = os.path.join('/tmp/vmcli', subprocess.getstatusoutput('whoami')[1])
         self.pssh = {
             'out': os.path.join(d, 'out'),
             'err': os.path.join(d, 'err'),

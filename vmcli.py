@@ -43,7 +43,7 @@ if __name__ == '__main__':
     #print(arg)
     #sys.exit()
 
-    c = Cluster(os.path.join(arg['--conf'], 'clusters.conf'), arg['--cluster'])
+    c = Cluster(os.path.join(arg['--conf']), arg['--cluster'])
     
     if arg['guest']:
         if arg['find']:
