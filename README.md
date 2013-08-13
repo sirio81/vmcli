@@ -14,7 +14,7 @@ Two or more hosts using a shared storage can be managed by your laptop, as long 
 
 The storage may be a nfs folder, a sheepdog cluster or whatever.
 
-You can then easily start a guest, show it's vnc, migrate it to another host, shut id down and more.
+You can then easily start a guest, show it's vnc, migrate it to another host, shut it down and more.
 
 Before starting a guest, several controls are performed in order to:
 
@@ -98,16 +98,18 @@ Create an ssh_config file adding host configuration like this:
         User root
         hostname 192.168.2.41
         IdentityFile ~/.ssh/id_rsa_vmcli
+        Port 4555
 
     Host test002
         User root
         hostname 192.168.2.42
         IdentityFile ~/.ssh/id_rsa_vmcli
+        Port 4556
     ...
 
 Export the key on every host: 
 
-    ssh-copy-id -i /home/user/.ssh/id_rsa_vmcli.pub hostname
+    ssh-copy-id -i /home/user/.ssh/id_rsa_vmcli.pub root@hostname
     
 Make sure you can login by ssh on all host without being asked for password or fingerprint before continuing.
 
@@ -152,9 +154,9 @@ You may whant to create an alias for the cluster you use the most (it may be jus
 Examples
 ========
 
-Cluster Configuration File
+Cluster Configuration File (clusters.conf)
 
-    [cluster]
+    [production]
     host_names = host01,host02,host03
     pssh_time_out = 15
     bin = qemu-system-x86_64
