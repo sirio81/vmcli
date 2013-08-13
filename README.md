@@ -32,14 +32,14 @@ Requirements
 
 **Cluster hosts:**
 
-qemu-kvm
-ssh daemon + public key to allow working station login
+qemu-kvm; ssh daemon + public key (to allow working station login)
 
 **Working Station:**
 
 ssh client + private key + ssh_config
-aptitude install socat python3 python3-setuptools parallel-ssh
-easy_install3 docopt
+
+    aptitude install socat python3 python3-setuptools parallel-ssh
+    easy_install3 docopt
 
 
 
