@@ -22,7 +22,7 @@ Before starting a guest, several controls are performed in order to:
   - check if the guest is already running on another host, to avoid virtual disk corruption;
   - check if a mac address or a virtual disk is already used by another running guest (due to user configuration error).
   
-You don't necessarily need to choose a host for starting guest, it will be automatically chosen.
+You don't necessarily need to choose a host for starting guest, it will be automatically chosen (load balance).
 
 Guest's configuration files do not have their own syntax, simply write down qemu options (one per line).
 
@@ -71,7 +71,8 @@ To reduce at the minimum the necessary configuration, you are bound to some conv
  - In guest's configuration file you must set the option '-name'.
  - The guest name has and the guest configuration file name must match. I.e.
  
-    /etc/vmcli/guests/debian.conf
+    /etc/vmcli/guests/production/debian.conf
+    
         --name debian
 
  - It has to be possible to connect to hosts by ssh without specifying user or port (see Cluster Setup).
