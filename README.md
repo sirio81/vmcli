@@ -91,11 +91,7 @@ Create a pair of ssh keys:
 
     ssh-keygen -t rsa 
     (you may choose a different file name like /home/user/.ssh/id_rsa_vmcli)
-  
-Export the key on every host: 
 
-    ssh-copy-id -i /home/user/.ssh/id_rsa_vmcli.pub hostname
-  
 Create an ssh_config file adding host configuration like this:
 
     Host test001
@@ -108,6 +104,10 @@ Create an ssh_config file adding host configuration like this:
         hostname 192.168.2.42
         IdentityFile ~/.ssh/id_rsa_vmcli
     ...
+
+Export the key on every host: 
+
+    ssh-copy-id -i /home/user/.ssh/id_rsa_vmcli.pub hostname
     
 Make sure you can login by ssh on all host without being asked for password or fingerprint before continuing.
 
