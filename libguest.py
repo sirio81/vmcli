@@ -8,13 +8,6 @@ class Guest:
         self.host_name = None
         self.name = self.opt['name']
 
-        #self.status = self.status(self):
-        #if self.status == 'down':
-            #all_opt = 'fix: fa file di configurazione'
-        #else:
-            #all_opt = 'fix: da processo qemu'
-        #self.parse_opt(self,all_opt):
-
     def parse_opt(self, all_opt):
         '''Take a string with the whole qemu commands and creates a dictionary
         with the option name as key. It's value will be a list because many
@@ -39,18 +32,10 @@ class Guest:
             opt[c[0]].append(c[1]) 
         return opt
 
-        
-    def status():
-        '''Returns guest status reading target host info file
-        Return 'up', 'down', 'paused' '''
-        pass
-    
-    ###fix: DEVE ESSERE RICHIAMATA SOLO QUANDO NON CI SONO GUEST CON LO STESSO NOME CHE GIRANO.
-    ### questo implica usare l'oggetto cluster
     def start(self, to_host):
         '''Simply starts the qemu process on the target host.
         No controls are made. They are demand to higher classes.
-        Retruns True if ssh exit with 0 status'''
+        Retruns ssh exit status'''
         out = subprocess.getstatusoutput('ssh {0} "{1} {2}"'.format(to_host, self.cluster_options['bin'], self.all_opt))
         if out[0] == 0: 
             self.host_name = to_host
@@ -61,9 +46,7 @@ class Guest:
         
     def shutdown(self):
         '''Shutdown the guest'''
-        #print('ssh {0} "echo system_powerdown | socat - UNIX-CONNECT:/tmp/{1}.sock"'.format(self.host_name, self.name))
         out = subprocess.getstatusoutput('ssh {0} "echo system_powerdown | socat - UNIX-CONNECT:/tmp/{1}.sock"'.format(self.host_name, self.name))
-        #print(out[1])
         return out[0]
         
     def show(self):
@@ -97,7 +80,3 @@ class Guest:
         smp: {}
         '''
         return info.format(self.host_name, self.opt['vnc'], self.opt['m'], self.opt['smp'])
-        
-        
-        
-        

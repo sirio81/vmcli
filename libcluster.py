@@ -2,10 +2,6 @@ from libvmcli import *
 from libhost import Host
 from libhost import Guest
 
-#import subprocess
-#import os
-#import sys
-
 
 class Cluster:
     def __init__(self,conf_dir, cluster_name):
@@ -45,11 +41,8 @@ class Cluster:
         self.query_hosts()
         for host_name in self.host_names:
             self.hosts[host_name] = Host(host_name, self.cluster_options)
-        
-        #hosts = {}
-        #for host_name in self.host_names:
-            #self.hosts[host_name] = Host(self, host_name)
-        
+
+
     def query_hosts(self):
         '''Contact all hosts and write output to file
         '''
@@ -64,15 +57,10 @@ class Cluster:
         if out[0] != 0:
             error('There has been problems collecting data from one or more hosts\n\n' + out[1])
 
-    ###def find_guest(self,guest_name):
-        ###pass
-    ###def migrate(self, guest_name, host_name):
-        ###pass
-        
-        
+
     def show(self):
         '''
-        Just show the server and the guests
+        Just show a list of the servers and their guests
         '''
         host_names = list(self.hosts)
         host_names.sort()
@@ -85,7 +73,8 @@ class Cluster:
                 guest_names.sort()
                 out += '\t' + ' '.join(guest_names)
         return out
-        
+
+
     def info(self):
         '''
         Show all hosts info
@@ -98,13 +87,13 @@ class Cluster:
             out += '\n' + 'server:' + host_name + '\n'
             out += self.hosts[host_name].info()
         return out
-        
-    
+
+
     def start_guest(self, guest_name, to_host='choose'):
         '''It calls the guest method to start the guest but it checks first if
         the target host has the necessary resources.
-        If not target host is given, one will be chosen.
-        It returns the host host name if the guest starts correctly,
+        If no target host is given, one will be chosen.
+        It returns True if the guest starts correctly,
         otherwise returns None'''
 
         host_name =  self.guest_find(guest_name)
@@ -113,7 +102,6 @@ class Cluster:
             
         # Istantiante guest from configuration file
         try:
-            #totest
             f = open(os.path.join(self.conf_dir, 'guests', self.name, guest_name) + '.conf', 'r')
         except:
             error('Gest configuration file not readable')
@@ -152,27 +140,27 @@ class Cluster:
         ports = self.cluster_options['migration_ports'].split('-')
         incoming_port = random.randint(int(ports[0]),int(ports[1]))
         
-        debug(g.all_opt)
+        #debug(g.all_opt)
         if '-incoming' in g.all_opt:
             all_opt = g.all_opt.split('-incoming')[0].strip()
-            debug(all_opt)
         else:
             all_opt = g.all_opt
         all_opt = all_opt + ' -incoming tcp:0:' + str(incoming_port)
         
         new_guest = Guest(all_opt, self.cluster_options)
-        debug('starting guest on new host (incoming)' + to_host)
+        print('starting guest on new host (incoming)' + to_host)
         if new_guest.start(to_host) != 0:
             return False
-        debug('starting migration')
-        debug('ssh {0} \'echo "migrate -d tcp:{1}:{2}" | socat - UNIX-CONNECT:/tmp/{3}.sock\''.format(host_name, to_host, incoming_port, guest_name))
+        print('starting migration')
+        #debug('ssh {0} \'echo "migrate -d tcp:{1}:{2}" | socat - UNIX-CONNECT:/tmp/{3}.sock\''.format(host_name, to_host, incoming_port, guest_name))
         if subprocess.getstatusoutput('ssh {0} \'echo "migrate -d tcp:{1}:{2}" | socat - UNIX-CONNECT:/tmp/{3}.sock\''.format(host_name, to_host, incoming_port, guest_name))[0] != 0:
             return False
         sleep(5)
-        debug('checking migration status')
+        print('checking migration status')
         
         while True:
-            debug('ssh {0} \'echo "info migrate" | socat - UNIX-CONNECT:/tmp/{1}.sock\''.format(host_name, guest_name))
+            #debug('ssh {0} \'echo "info migrate" | socat - UNIX-CONNECT:/tmp/{1}.sock\''.format(host_name, guest_name))
+            print('...in progress')
             out = subprocess.getstatusoutput('ssh {0} \'echo "info migrate" | socat - UNIX-CONNECT:/tmp/{1}.sock\''.format(host_name, guest_name))
             if 'active' in out[1]:
                 sleep (5)
@@ -188,8 +176,8 @@ class Cluster:
         
     def check_contention(self, guest):
         '''Check if a disk, or mac address is already used on the cluster.
-        Return host_name if it does.
-        Else None'''
+        Return True if it does.
+        Else False'''
         
         #Check fro drives
         if 'drive' in guest.opt:
@@ -239,7 +227,7 @@ class Cluster:
         Return True/False'''
         if self.hosts[to_host].cpu_cores < int(guest.opt['smp']):
             return False
-        if self.hosts[to_host].ram_free  < (int(guest.opt['m']) + 256):
+        if self.hosts[to_host].ram_free  < (int(guest.opt['m']) + 512):
             return False
         return True
             
@@ -261,15 +249,19 @@ class Cluster:
                     chosen = host_name
             return chosen
         return None
-    
+
+
     def clear_drives(self, drives):
+        '''Remove drives options from the list'''
         clean_list = []
         for drive in drives:
             drive = drive.replace('file=', '').split(',')[0]
             clean_list.append(drive)
         return clean_list
 
+
     def clear_macs(self, macs):
+        '''Remove other net options form the list'''
         clean_list = []
         for mac in macs:
             mac = mac.split('macaddr=')[1].split(',')[0]
@@ -278,17 +270,20 @@ class Cluster:
 
 
     def shutdown_guests(self):
+        '''Shut down all cluster guests'''
         for host_name in self.hosts:
             self.hosts[host_name].shutdown_guests()
-            
+
+
     def guest_find(self, guest_name):
+        '''Show the host name on wich the guest is running'''
         for host_name in self.hosts:
             if self.hosts[host_name].guests is not None:
                 if guest_name in self.hosts[host_name].guests:
                     return host_name
         return None
-                
-            
+
+
     def poweroff(self):
         '''
         Turn off power to all servers after checking the presence of any sheep proccess
@@ -307,9 +302,12 @@ class Cluster:
             print('Sheep daemon is still alive in: ', ' '.join(sheeps))
             print('All sheep processes have to be down before powring off all the hosts!')
             return False
-    
+
+
     def show_guests(self):
+        '''Show the vnc of all cluster guests'''
         for host_name in self.hosts:
-            debug('host_name: ' + host_name)
             self.hosts[host_name].show_guests()
-            
+
+
+

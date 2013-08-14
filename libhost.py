@@ -71,7 +71,8 @@ class Host:
         for line in all_info.splitlines():
             if 'load average:' in line:
                 self.uptime = line.strip()
-                
+
+
     def info(self):
         info = '''
         Cpu: {0}
@@ -82,11 +83,10 @@ class Host:
         Uptime: {5}
         '''
         return info.format(self.cpu_name, self.cpu_cores, self.ram_total, self.ram_guests, self.name_guests, self.uptime)
-        
+
+
     def guest_processes(self):
-        '''Reads the host's info file and creates new istances for all running 
-        guests and append them to the host's dictionary.
-        Returns True if at least one guest has benn found.'''
+        '''Read the host info file and returns a list of qemu processes'''
         out = subprocess.getstatusoutput('grep {} {}'.format(self.cluster_options['bin'], os.path.join(self.pssh['out'], self.name)))
         if out[0] == 0:
             processes = []
@@ -96,15 +96,8 @@ class Host:
             return processes
         else:
             return None
-        #subprocess.getstatusoutput( "grep -rw {} {} | grep -w 'name {}'".format(kvm, pssh['out_dir'], name))
-        #for guest_name in Fixlist_da_info_file:
-            #self.add_guest(guest_name)
-        #print(out[1])
 
-    def check_used_resource(self, resource_name):
-        '''Returns True if the resource is already used'''
-        pass
-    
+
     def shutdown_guests(self):
         '''
         Shutdown all the guests of a specific host
@@ -117,8 +110,10 @@ class Host:
         else:
             print('No guests running on', self.name)
             return False
-            
+
+
     def show_guests(self):
+        ''' Show vnc of all the running guests on this host'''
         if self.guests is not None:
             for guest_name in self.guests:
                 self.guests[guest_name].show()
