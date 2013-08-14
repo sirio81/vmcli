@@ -14,6 +14,10 @@ class Cluster:
         config = configparser.ConfigParser()
         config.read(config_file)
         try:
+            self.global_cluster_options = dict(config.items('global'))
+        except:
+            error('"global" section missing or wrong. Check you configuration.')
+        try:
             self.cluster_options = dict(config.items(self.name))
         except:
             error('You chose a wrong cluster')
@@ -40,7 +44,7 @@ class Cluster:
         self.host_names = self.cluster_options['host_names'].split(',')
         self.query_hosts()
         for host_name in self.host_names:
-            self.hosts[host_name] = Host(host_name, self.cluster_options)
+            self.hosts[host_name] = Host(host_name, self.global_cluster_options, self.cluster_options)
 
 
     def query_hosts(self):
@@ -106,7 +110,7 @@ class Cluster:
         except:
             error('Gest configuration file not readable')
         all_opt = parse_conf(f.read().strip())
-        g = Guest(all_opt, self.cluster_options)
+        g = Guest(all_opt, self.global_cluster_options, self.cluster_options)
         
         # Search on the cluster already used resources
         if self.check_contention(g):
@@ -147,7 +151,7 @@ class Cluster:
             all_opt = g.all_opt
         all_opt = all_opt + ' -incoming tcp:0:' + str(incoming_port)
         
-        new_guest = Guest(all_opt, self.cluster_options)
+        new_guest = Guest(all_opt, self.global_cluster_options, self.cluster_options)
         print('starting guest on new host (incoming)' + to_host)
         if new_guest.start(to_host) != 0:
             return False
@@ -306,8 +310,18 @@ class Cluster:
 
     def show_guests(self):
         '''Show the vnc of all cluster guests'''
-        for host_name in self.hosts:
-            self.hosts[host_name].show_guests()
+        if self.global_cluster_options == 'vncviewer':
+            for host_name in self.hosts:
+                self.hosts[host_name].show_guests()
+        elif self.global_cluster_options['vncviewer'] == 'krdc':
+            guest_list = []
+            for host_name in self.hosts:
+                if self.hosts[host_name].guests is not None:
+                    for guest_name in self.hosts[host_name].guests:
+                        guest_list.append(host_name + self.hosts[host_name].guests[guest_name].opt['vnc'])
+            debug('krdc ' + ' '.join(guest_list))
+            #os.system('krdc ' + ' '.join(guest_list))
+
 
 
 

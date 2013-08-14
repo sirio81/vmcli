@@ -38,13 +38,11 @@ Options:
   --conf=path       Change path of the main configuration directory [default: /etc/vmcli]
 '''
 
+
 if __name__ == '__main__':
     arg = docopt(h, version='0.8')
-    #print(arg)
-    #sys.exit()
-
     c = Cluster(os.path.join(arg['--conf']), arg['--cluster'])
-    
+
     if arg['guest']:
         if arg['find']:
             print(c.guest_find(arg['<guest_name>']))
@@ -80,6 +78,8 @@ if __name__ == '__main__':
     elif arg['host']:
         if arg['info']:
             print(c.hosts[arg['<host_name>']].info())
+        elif arg['show_guests']:
+            c.hosts[arg['<host_name>']].show_guests()
         elif arg['shutdown_guests']:
             c.hosts[arg['<host_name>']].shutdown_guests()
     elif arg['cluster']:
@@ -87,6 +87,8 @@ if __name__ == '__main__':
             print(c.info())
         if arg['show']:
             print(c.show())
+        if arg['show_guests']:
+            print(c.show_guests())
         if arg['poweroff']:
             c.poweroff()
         if arg['shutdown_guests']:

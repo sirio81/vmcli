@@ -1,7 +1,8 @@
 from libvmcli import *
 
 class Guest:
-    def __init__(self, all_opt, cluster_options):
+    def __init__(self, all_opt, global_cluster_options, cluster_options):
+        self.global_cluster_options = global_cluster_options
         self.cluster_options = cluster_options
         self.all_opt = all_opt
         self.opt = self.parse_opt(all_opt)
@@ -50,14 +51,14 @@ class Guest:
         return out[0]
         
     def show(self):
+        vncviewer = self.global_cluster_options['vncviewer']
         if self.cluster_options['vnc_over_ssh'] == 'true':
             port = 5900 + int(self.opt['vnc'].replace(':','').split(',')[0])
             os.system('pkill -f --exact "ssh -fN {0} -L {1}:localhost:{1}"'.format(self.host_name, port))
             os.system('ssh -fN {0} -L {1}:localhost:{1}'.format(self.host_name, port))
-            os.system('vncviewer {}{} &'.format('localhost', self.opt['vnc']))
+            os.system('{} {}{} &'.format(vncviewer, 'localhost', self.opt['vnc']))
         else:
-            print('vncviewer {}{} &'.format(self.host_name, self.opt['vnc']))
-            os.system('vncviewer {}{} &'.format(self.host_name, self.opt['vnc']))
+            os.system('{} {}{} &'.format(vncviewer, self.host_name, self.opt['vnc']))
             
     def kill(self):
         subprocess.getstatusoutput('ssh {0} \'pkill -f "name {1}"\''.format(self.host_name, self.name))

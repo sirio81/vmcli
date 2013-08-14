@@ -3,9 +3,10 @@ from libguest import Guest
 
 
 class Host:
-    def __init__(self, name, cluster_options):
+    def __init__(self, name, global_cluster_options, cluster_options):
         self.guests = {}
         self.name = name
+        self.global_cluster_options = global_cluster_options
         self.cluster_options = cluster_options
         d = os.path.join('/tmp/vmcli', subprocess.getstatusoutput('whoami')[1])
         self.pssh = {
@@ -19,7 +20,7 @@ class Host:
             self.guests = None
         else:
             for process in processes:
-                g = Guest(process, self.cluster_options)
+                g = Guest(process, self.global_cluster_options, self.cluster_options)
                 g.host_name = self.name
                 self.guests[g.opt['name']] = g
         
@@ -109,13 +110,19 @@ class Host:
 
     def show_guests(self):
         ''' Show vnc of all the running guests on this host'''
-        if self.guests is not None:
+        if self.guests is None:
+            print('No guests running on', self.name)
+            return 1
+        if self.global_cluster_options['vncviewer'] == 'vncviewer':
             for guest_name in self.guests:
                 self.guests[guest_name].show()
                 sleep(1)
-            return 0
-        else:
-            print('No guests running on', self.name)
-            return 1
+        elif self.global_cluster_options['vncviewer'] == 'krdc':
+            guest_list = []
+            for guest_name in self.guests:
+                guest_list.append(self.name + self.guests[guest_name].opt['vnc'])
+            os.system('krdc ' + ' '.join(guest_list))
+        return 0
+
             
             
