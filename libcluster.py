@@ -94,8 +94,8 @@ class Cluster:
         the target host has the necessary resources.
         If no target host is given, one will be chosen.
         It returns True if the guest starts correctly,
-        otherwise returns None'''
-
+        otherwise returns None
+        '''
         host_name =  self.guest_find(guest_name)
         if host_name is not None:
             error('guest {} already running on {}'.format(guest_name, host_name))
