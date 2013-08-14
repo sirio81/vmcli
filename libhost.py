@@ -47,26 +47,20 @@ class Host:
         for line in all_info.splitlines():
             if 'Mem:    ' in line:
                 self.ram_total = int(re.sub(' +', ' ', line).split()[1])
-                
+
         # Find mem used by guests
         self.ram_guests = 0
         if self.guests is not None:
             for guest_name in self.guests:
                 self.ram_guests += int(self.guests[guest_name].opt['m'])
-                    
+
         self.ram_free = self.ram_total - self.ram_guests
         if self.ram_free < 0:
             self.ram_free = 0
-        
+
         # Find actual cached memeory
         self.ram_free = self.ram_total - self.ram_guests
-                
-        #Find active guest names
-        self.name_guests = []
-        for line in all_info.splitlines():
-                if 'qemu-system-x86_64' in line:
-                    self.name_guests.append(get_opt_value('-name', line))
-                    
+
         # Show uptime
         for line in all_info.splitlines():
             if 'load average:' in line:
@@ -82,7 +76,8 @@ class Host:
         Running Guests: {4}
         Uptime: {5}
         '''
-        return info.format(self.cpu_name, self.cpu_cores, self.ram_total, self.ram_guests, self.name_guests, self.uptime)
+        guest_names = sorted(list(self.guests)) if self.guests is not None else None
+        return info.format(self.cpu_name, self.cpu_cores, self.ram_total, self.ram_guests, guest_names, self.uptime)
 
 
     def guest_processes(self):
