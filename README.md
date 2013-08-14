@@ -62,19 +62,22 @@ Convention
 ==========
 To reduce at the minimum the necessary configuration, you are bound to some convention:
 
+ - Guest name has to be unique (no guests with the same name).
+ - Considering that we use a shared storage, also virtual disk names have to be unique.
  - Default configuration directory is /etc/vmcli.
  - There's a single configuration file for all clusters named 'clusters.conf'. It has to be present in the root of the configuration folder.
  - For each cluster you wish to manage:
   * add a section by editing /etc/vmcli/clusters.conf;
   * create a directory for guests configuration files named 'guests' and a sub folder for each cluster using the same cluster name:
     /etc/vmcli/guests/production
+ - Guest configuration file has the extension '.conf' (or it will be ignored).
  - In guest's configuration file you must set the option '-name'.
- - The guest name has and the guest configuration file name must match. I.e.
+ - The guest name and the guest configuration file name must match. I.e.
  
     /etc/vmcli/guests/production/debian.conf
     
         --name debian
-
+ 
  - It has to be possible to connect to hosts by ssh without specifying user or port (see Cluster Setup).
  - 'socat'; 'parallel-ssh' and all other command used by the vmcli have to be in your user PATH.
  - All hosts use the same qemy/kvm command.
@@ -92,6 +95,10 @@ Create a pair of ssh keys:
     ssh-keygen -t rsa 
     (you may choose a different file name like /home/user/.ssh/id_rsa_vmcli)
 
+Export the key on every host: 
+
+    ssh-copy-id -i /home/user/.ssh/id_rsa_vmcli.pub root@hostname
+
 Create an ssh_config file adding host configuration like this:
 
     Host test001
@@ -106,10 +113,6 @@ Create an ssh_config file adding host configuration like this:
         IdentityFile ~/.ssh/id_rsa_vmcli
         Port 4556
     ...
-
-Export the key on every host: 
-
-    ssh-copy-id -i /home/user/.ssh/id_rsa_vmcli.pub root@hostname
     
 Make sure you can login by ssh on all host without being asked for password or fingerprint before continuing.
 
@@ -154,7 +157,7 @@ You may whant to create an alias for the cluster you use the most (it may be jus
 Examples
 ========
 
-Cluster Configuration File (clusters.conf)
+Cluster Configuration File (i.e. /etc/vmcli/clusters.conf)
 
     [production]
     host_names = host01,host02,host03
@@ -165,7 +168,7 @@ Cluster Configuration File (clusters.conf)
     migration_ports = 6000-7000
 
 
-Guest Configuration File
+Guest Configuration File (i.e. /etc/vmcli/production/template.conf)
 
     -name template
     -enable-kvm
