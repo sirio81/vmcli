@@ -46,7 +46,7 @@ qemu-kvm; ssh daemon + public key (to allow working station login)
 
 ssh client + private key + ssh_config
 
-    aptitude install socat python3 python3-setuptools parallel-ssh
+    aptitude install socat python3 python3-setuptools pssh
     easy_install3 docopt
 
 
