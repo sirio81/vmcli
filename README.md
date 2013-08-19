@@ -40,22 +40,18 @@ Requirements
 
 **Cluster hosts:**
 
-qemu-kvm; ssh daemon + public key (to allow working station login)
+qemu-kvm
+
+ssh daemon + public key (to allow working station login)
 
 **Working Station:**
 
 A vnc viewer (xvnc4viewer, xtightvncviewer, krdc, vinagre)
+
 ssh client + private key + ssh_config
 
     aptitude install socat python3 python3-setuptools pssh
     easy_install3 docopt
-
-
-
-Installation
-============
-
-git clone https://github.com/sirio81/vmcli.git
 
 
 
@@ -82,6 +78,13 @@ To reduce at the minimum the necessary configuration, you are bound to some conv
  - It has to be possible to connect to hosts by ssh without specifying user or port (see Cluster Setup).
  - 'socat'; 'parallel-ssh' and all other command used by the vmcli have to be in your user PATH.
  - All hosts use the same qemy/kvm command.
+
+
+
+ Installation
+============
+
+git clone https://github.com/sirio81/vmcli.git
 
 
 
@@ -153,7 +156,11 @@ You may whant to create an alias for the cluster you use the most (it may be jus
 
     alias vmcli='vmcli.py --cluster=production'
 
+This way you may simply write
 
+    vmcli cluster show
+    
+    
 
 Examples
 ========
