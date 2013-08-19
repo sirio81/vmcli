@@ -81,7 +81,7 @@ To reduce at the minimum the necessary configuration, you are bound to some conv
 
 
 
- Installation
+Installation
 ============
 
 git clone https://github.com/sirio81/vmcli.git
