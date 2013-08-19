@@ -186,3 +186,49 @@ Guest Configuration File (i.e. /etc/vmcli/production/template.conf)
     #-net nic,macaddr=52:54:00:03:5b:29 -net tap
     #-netdev type=tap,id=lan0,script=no,vhost=on -device virtio-net-pci,netdev=lan0,mac=52:54:00:03:5b:29
     
+    
+    
+Known Problems
+==============
+
+MISSING REVERSE DNS 
+
+With a reverse dns you can get the host name from the ip address.
+
+    $ nslookup 192.168.2.45
+    Server:         192.168.2.254
+    Address:        192.168.2.254#53
+
+    45.2.168.192.in-addr.arpa       name = test005.
+
+If your vmcli is slow at responding, you are probably not able to resolve a host ip.
+You'll notice that pinging a host requires lot's of time.
+
+(In the example below, it take 3 second for 4 requests).
+
+    $ ping -c 4 test005
+    PING test005.extensys.lan (192.168.2.45) 56(84) bytes of data.
+    64 bytes from test005 (192.168.2.45): icmp_req=1 ttl=64 time=0.261 ms
+    64 bytes from test005 (192.168.2.45): icmp_req=2 ttl=64 time=0.308 ms
+    64 bytes from test005 (192.168.2.45): icmp_req=3 ttl=64 time=0.293 ms
+    64 bytes from test005 (192.168.2.45): icmp_req=4 ttl=64 time=0.347 ms
+
+    --- test005.extensys.lan ping statistics ---
+    4 packets transmitted, 4 received, 0% packet loss, time 3004ms  <===
+    rtt min/avg/max/mdev = 0.261/0.302/0.347/0.033 ms
+
+If reverse dns is missing, it may take 15 seconds (or even more)
+
+    $ ping -c 4 test005
+    PING test005.extensys.lan (192.168.2.45) 56(84) bytes of data.
+    64 bytes from 192.168.2.45: icmp_req=1 ttl=64 time=0.295 ms
+    64 bytes from 192.168.2.45: icmp_req=2 ttl=64 time=0.304 ms
+    64 bytes from 192.168.2.45: icmp_req=3 ttl=64 time=0.269 ms
+    64 bytes from 192.168.2.45: icmp_req=4 ttl=64 time=0.271 ms
+
+    --- test005.extensys.lan ping statistics ---
+    4 packets transmitted, 4 received, 0% packet loss, time 15028ms <===
+    rtt min/avg/max/mdev = 0.269/0.284/0.304/0.025 ms
+
+Ssh is going to be slow as much as ping, and so vmcli will be.
+Please add a reverse zone to your dns.
