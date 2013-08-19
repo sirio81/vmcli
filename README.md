@@ -161,6 +161,7 @@ Examples
 Cluster Configuration File (i.e. /etc/vmcli/clusters.conf)
 
     [global]
+    # Supported: krdc; vinagre; vncviewer (xtightvncviewer or xvnc4viewer)
     vncviewer = vncviewer
     
     [production]
