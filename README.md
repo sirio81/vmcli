@@ -44,6 +44,7 @@ qemu-kvm; ssh daemon + public key (to allow working station login)
 
 **Working Station:**
 
+A vnc viewer (xvnc4viewer, xtightvncviewer, krdc, vinagre)
 ssh client + private key + ssh_config
 
     aptitude install socat python3 python3-setuptools pssh
@@ -159,6 +160,9 @@ Examples
 
 Cluster Configuration File (i.e. /etc/vmcli/clusters.conf)
 
+    [global]
+    vncviewer = vncviewer
+    
     [production]
     host_names = host01,host02,host03
     pssh_time_out = 15
