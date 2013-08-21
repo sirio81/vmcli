@@ -8,6 +8,7 @@ class Guest:
         self.opt = self.parse_opt(all_opt)
         self.host_name = None
         self.name = self.opt['name']
+        # Note: this will not bother migration, because 'all_opt' is going to be used to start the new process.
         if ',' in self.opt['vnc']:
             self.opt['vnc'] = self.opt['vnc'].split(',')[0]
 
@@ -43,7 +44,7 @@ class Guest:
         if out[0] == 0: 
             self.host_name = to_host
         else:
-            print('ERROR: ', out[1])
+            error(out[1])
         return out[0]
         
         

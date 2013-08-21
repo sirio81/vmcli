@@ -108,7 +108,7 @@ class Cluster:
         try:
             f = open(os.path.join(self.conf_dir, 'guests', self.name, guest_name) + '.conf', 'r')
         except:
-            error('Gest configuration file not readable')
+            error('Guest configuration file not readable')
         all_opt = parse_conf(f.read().strip())
         g = Guest(all_opt, self.global_cluster_options, self.cluster_options)
         
@@ -172,7 +172,7 @@ class Cluster:
                 break
         
         if 'Migration status: completed' in out[1]:
-            print('Migration competed')
+            print('Migration completed')
             g.kill()
         else:
             error('failed')
