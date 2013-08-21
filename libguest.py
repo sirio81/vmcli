@@ -8,6 +8,8 @@ class Guest:
         self.opt = self.parse_opt(all_opt)
         self.host_name = None
         self.name = self.opt['name']
+        if ',' in self.opt['vnc']:
+            self.opt['vnc'] = self.opt['vnc'].split(',')[0]
 
     def parse_opt(self, all_opt):
         '''Take a string with the whole qemu commands and creates a dictionary
@@ -53,7 +55,7 @@ class Guest:
     def show(self):
         vncviewer = self.global_cluster_options['vncviewer']
         if self.cluster_options['vnc_over_ssh'] == 'true':
-            port = 5900 + int(self.opt['vnc'].replace(':','').split(',')[0])
+            port = 5900 + int(self.opt['vnc'].replace(':',''))
             os.system('pkill -f --exact "ssh -fN {0} -L {1}:localhost:{1}"'.format(self.host_name, port))
             os.system('ssh -fN {0} -L {1}:localhost:{1}'.format(self.host_name, port))
             os.system('{} {}{} &'.format(vncviewer, 'localhost', self.opt['vnc']))
