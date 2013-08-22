@@ -13,30 +13,6 @@ def error(msg=''):
     print(msg)
     sys.exit(1)
 
-def print_help():
-    print('''
-    Posizione argomenti
-    0     1     2    3
-    vmcli guest find <guest name>
-    vmcli guest start <guest name> [host]
-    vmcli guest start_and_show <guest name> [host]
-    vmcli guest shutdown <guest name>
-    vmcli guest kill <guest name>
-    vmcli guest stop <guest name>
-    vmcli guest cont <guest name>
-    vmcli guest info <guest name>
-    vmcli guest migrate <guest name> <to-host>
-    vmcli guest show <guest name>
-    vmcli host info <host name>
-    vmcli host shutdown_guests <host name>
-    vmcli cluser info
-    vmcli cluser show
-    vmcli cluser poweroff
-    vmcli clusert shutdown_guests
-    ''')
-    sys.exit(1)
-
-
 def parse_conf(conf):
     '''Remove all comments (also in-line) and empty rows
     Returns a single line string
