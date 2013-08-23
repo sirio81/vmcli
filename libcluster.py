@@ -292,21 +292,55 @@ class Cluster:
         '''
         Turn off power to all servers after checking the presence of any sheep proccess
         '''
+        print('Checking if any guest is running')
+        for host_name in self.hosts:
+            if self.hosts[host_name].guests is not None:
+                print('...there are still active guests, I can\'t shutdown the cluster')
+                return False
+                
+        print('Checking sheeps status')
         parallel_ssh = 'parallel-ssh -h {} -t {} '.format(self.pssh['host_file'], self.cluster_options['pssh_time_out'])
-        status = (subprocess.getstatusoutput(parallel_ssh + " 'pgrep -x sheep'"))
-        if 'SUCCESS' not in status[1]:
-            print('No sheep processes found. Hosts will be powered off')
-            (subprocess.getstatusoutput(parallel_ssh + " poweroff"))
-            return True
-        else:
-            sheeps = []
-            for sheep in status[1].splitlines():
-                if 'SUCCESS' in sheep:
-                    sheeps.append(sheep.split()[3])
-            print('Sheep daemon is still alive in: ', ' '.join(sheeps))
-            print('All sheep processes have to be down before powring off all the hosts!')
+        sheeps_status = subprocess.getstatusoutput(parallel_ssh + " 'pgrep -x sheep'")
+        
+        if 'SUCCESS' in sheeps_status[1] and 'FAILURE' in sheeps_status[1]:
+            print('...some sheeps are alive, some are not. Fix this manually.')
             return False
-
+            
+        # If all sheeps are alive, check the recovery, then kill them.
+        # Else, they are dead already, and I can shutdown the cluster
+        if 'FAILURE' not in sheeps_status[1]:
+            print('Cheking if recovery is running')
+            for host_name in self.hosts:
+                status = subprocess.getstatusoutput('ssh {} "dog node recovery"'.format(host_name))
+                if status[0] != 0:
+                    print('..failed')
+                    return(False)
+                elif len(status[1].splitlines()) != 2:
+                    print('...a recovery is running. I can\'t shutdown the cluster')
+                    return False
+                break
+        
+            print('Shutting down sheepdog')
+            for host_name in self.hosts:
+                status = subprocess.getstatusoutput('ssh {} "dog cluster shutdown"'.format(host_name))
+                if status[0] is not 0:
+                    print('...failed')
+                    return False
+                
+                break
+            sleep(3)
+            
+            parallel_ssh = 'parallel-ssh -h {} -t {} '.format(self.pssh['host_file'], self.cluster_options['pssh_time_out'])
+            sheeps_status = subprocess.getstatusoutput(parallel_ssh + " 'pgrep -x sheep'")
+            
+            if 'SUCCESS' in sheeps_status[1]:
+                print('...cluster shutdown faile to kill all the sheeps. Fix this manually')
+        
+        else:
+            print('... all sheeps are already dead')
+            
+        print('Powering off hosts')
+        subprocess.getstatusoutput(parallel_ssh + " poweroff")
 
     def show_guests(self):
         '''Show the vnc of all cluster guests'''
