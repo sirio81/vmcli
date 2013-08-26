@@ -356,6 +356,39 @@ class Cluster:
             debug('krdc ' + ' '.join(guest_list))
             #os.system('krdc ' + ' '.join(guest_list))
 
+    def list_guests(self):
+        '''Show guest name list reading file name.
+        File not ending with '.conf' will be ignored'''
+        clean_list = []
+        out = ''
+        prefix = ''
+        name_max_len = 0
+        try:
+            l = os.listdir(os.path.join(self.conf_dir, 'guests', self.name))
+        except:
+            error('Guests\'s configuration folder not found')
+            
+        # Keep only name ending exactly with '.conf' and remove the suffix
+        l.sort()
+        for f in l:
+            if f[-5::1] == '.conf':
+                clean_list.append(f.replace('.conf', ''))
+
+        # Adapt the column size to the longer guest name
+        for guest_name in clean_list:
+            if len(guest_name) > name_max_len: name_max_len = len(guest_name)
+        prefix = ' ' * name_max_len + ' ' * 4
+        
+        # Create a table like structure.
+        # Also mark running guests with '*' and report the host name
+        for guest_name in clean_list:
+            host_name = self.guest_find(guest_name)
+            if host_name is not None:
+                out += '* ' + '\t\t\t'.join([guest_name, host_name]) + '\n\r'
+            else:
+                out += '  ' + guest_name + '\n\r'
+        
+        return out
 
 
 

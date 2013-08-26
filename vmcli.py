@@ -18,6 +18,7 @@ Usage:
   vmcli.py  [--conf=<path>] --cluster=<name> guest stop <guest_name>
   vmcli.py  [--conf=<path>] --cluster=<name> guest cont <guest_name>
   vmcli.py  [--conf=<path>] --cluster=<name> guest info <guest_name>
+  vmcli.py  [--conf=<path>] --cluster=<name> guest list
   vmcli.py  [--conf=<path>] --cluster=<name> guest migrate <guest_name> <host_name>
   vmcli.py  [--conf=<path>] --cluster=<name> guest show <guest_name>
   vmcli.py  [--conf=<path>] --cluster=<name> host info <host_name>
@@ -75,6 +76,8 @@ if __name__ == '__main__':
         elif arg['show']:
             host_name = c.guest_find(arg['<guest_name>'])
             print('Guest not found') if host_name is None else c.hosts[host_name].guests[arg['<guest_name>']].show()
+        elif arg['list']:
+            print(c.list_guests())
     elif arg['host']:
         if arg['info']:
             print(c.hosts[arg['<host_name>']].info())
