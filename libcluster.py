@@ -360,9 +360,14 @@ class Cluster:
         '''Show guest name list reading file name.
         File not ending with '.conf' will be ignored'''
         clean_list = []
-        out = ''
-        prefix = ''
+        rows = []
+        col_status = ''
+        col_guest_name = ''
+        col_host_name = ''
+        separator = ''
+        separator_min = ' ' * 4
         name_max_len = 0
+        out = ''
         try:
             l = os.listdir(os.path.join(self.conf_dir, 'guests', self.name))
         except:
@@ -377,18 +382,15 @@ class Cluster:
         # Adapt the column size to the longer guest name
         for guest_name in clean_list:
             if len(guest_name) > name_max_len: name_max_len = len(guest_name)
-        prefix = ' ' * name_max_len + ' ' * 4
-        
-        # Create a table like structure.
-        # Also mark running guests with '*' and report the host name
         for guest_name in clean_list:
             host_name = self.guest_find(guest_name)
-            if host_name is not None:
-                out += '* ' + '\t\t\t'.join([guest_name, host_name]) + '\n\r'
-            else:
-                out += '  ' + guest_name + '\n\r'
-        
-        return out
+            status = '  ' if host_name is None else '* '
+            if host_name is None: host_name = '' 
+            col_guest_name = guest_name + ' ' * (name_max_len - len(guest_name)) + separator_min
+            col_host_name = host_name + '\n\r'
+            rows.append(status + col_guest_name + host_name)
+            
+        return '\n\r'.join(rows)
 
 
 
