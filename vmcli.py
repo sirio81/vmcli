@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from libvmcli import error
 from libcluster import Cluster
 from libguest import Guest
 from time import sleep
@@ -79,6 +80,8 @@ if __name__ == '__main__':
         elif arg['list']:
             print(c.list_guests())
     elif arg['host']:
+        if arg['<host_name>'] not in c.hosts:
+            error('Host not valid')
         if arg['info']:
             print(c.hosts[arg['<host_name>']].info())
         elif arg['show_guests']:

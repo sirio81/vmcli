@@ -100,6 +100,7 @@ class Cluster:
         It returns True if the guest starts correctly,
         otherwise returns None
         '''
+        
         host_name =  self.guest_find(guest_name)
         if host_name is not None:
             error('guest {} already running on {}'.format(guest_name, host_name))
@@ -121,6 +122,8 @@ class Cluster:
             if to_host is None:
                 error('No suitable hosts found')
         else:
+            if to_host not in self.hosts:
+                error('Host not valid')
             if not self.compare_min_resources(g, to_host):
                 error('Not enough resources on ' + to_host)
 
@@ -136,6 +139,8 @@ class Cluster:
         host_name = self.guest_find(guest_name)
         if to_host == host_name:
             error('Can\'t migrate on the same host')
+        if to_host not in self.hosts:
+            error('Host not valid')
             
         g = self.hosts[host_name].guests[guest_name]
         if not self.compare_min_resources(g, to_host):
@@ -380,6 +385,11 @@ class Cluster:
                 clean_list.append(f.replace('.conf', ''))
 
         # Adapt the column size to the longer guest name
+        #|status|guest name         | host name|
+        #---------------------------------------
+        #|......|max_len,sep_min    |          |
+        #|......|name,diff,sep_min  |          |
+        
         for guest_name in clean_list:
             if len(guest_name) > name_max_len: name_max_len = len(guest_name)
         for guest_name in clean_list:
