@@ -52,16 +52,21 @@ class Guest:
         '''Shutdown the guest'''
         out = subprocess.getstatusoutput('ssh {0} "echo system_powerdown | socat - UNIX-CONNECT:/tmp/{1}.sock"'.format(self.host_name, self.name))
         return out[0]
-        
+
+    def ssh_bridge_vnc(self):
+        port = 5900 + int(self.opt['vnc'].replace(':',''))
+        os.system('pkill -f --exact "ssh -fN {0} -L {1}:localhost:{1}"'.format(self.host_name, port))
+        os.system('ssh -fN {0} -L {1}:localhost:{1}'.format(self.host_name, port))
+
+            
     def show(self):
         vncviewer = self.global_cluster_options['vncviewer']
         if self.cluster_options['vnc_over_ssh'] == 'true':
-            port = 5900 + int(self.opt['vnc'].replace(':',''))
-            os.system('pkill -f --exact "ssh -fN {0} -L {1}:localhost:{1}"'.format(self.host_name, port))
-            os.system('ssh -fN {0} -L {1}:localhost:{1}'.format(self.host_name, port))
-            os.system('{} {}{} &'.format(vncviewer, 'localhost', self.opt['vnc']))
+            self.ssh_bridge_vnc()
+            host_name = 'localhost'
         else:
-            os.system('{} {}{} &'.format(vncviewer, self.host_name, self.opt['vnc']))
+            host_name = self.host_name
+        os.system('{} {}{} &'.format(vncviewer, host_name, self.opt['vnc']))
             
     def kill(self):
         subprocess.getstatusoutput('ssh {0} \'pkill -f "name {1}"\''.format(self.host_name, self.name))
