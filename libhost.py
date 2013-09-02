@@ -110,18 +110,33 @@ class Host:
 
     def show_guests(self):
         ''' Show vnc of all the running guests on this host'''
+        ssh_br_cmd = 'ssh -fN {} '.format(self.name)
+        viewer = self.global_cluster_options['vncviewer']
+        host_name = self.name
+        
         if self.guests is None:
             print('No guests running on', self.name)
             return 1
-        if self.global_cluster_options['vncviewer'] == 'vncviewer':
+        
+        # Create ssh bridge
+        if self.cluster_options['vnc_over_ssh'] == 'true':
+            host_name = 'localhost'
+            bridges = []
             for guest_name in self.guests:
-                self.guests[guest_name].show()
-                sleep(1)
-        elif self.global_cluster_options['vncviewer'] == 'krdc':
+                port = 5900 + int(self.guests[guest_name].opt['vnc'].replace(':',''))
+                bridges.append('-L {0}:localhost:{0}'.format(port))
+            ssh_br_cmd = ssh_br_cmd + ' '.join(bridges)
+            subprocess.getstatusoutput('pkill -f --exact "{}"'.format(ssh_br_cmd))
+            os.system(ssh_br_cmd)
+        
+        if self.global_cluster_options['vncviewer'] != 'vncviewer':
             guest_list = []
             for guest_name in self.guests:
-                guest_list.append(self.name + self.guests[guest_name].opt['vnc'])
-            os.system('krdc ' + ' '.join(guest_list))
+                guest_list.append(host_name + self.guests[guest_name].opt['vnc'])
+            
+        cmd = viewer + ' ' + ' '.join(guest_list)
+        os.system(cmd + ' &')
+        
         return 0
 
             
