@@ -57,15 +57,20 @@ ssh client + private key + ssh_config
 
 Convention
 ==========
-To reduce at the minimum the necessary configuration, you are bound to some conventions:
+To reduce at the minimum the necessary configuration, you are bound to some
+conventions:
 
- - Guest name has to be unique (no guests with the same name, not even if running on different hosts).
- - Considering that we use a shared storage, also virtual disk names have to be unique.
+ - Guest name has to be unique (no guests with the same name, not even if
+   running on different hosts).
+ - Considering that we use a shared storage, also virtual disk names have to be
+   unique.
  - Default configuration directory is /etc/vmcli.
- - There's a single configuration file for all clusters named 'clusters.conf'. It has to be present in the root of the configuration folder.
+ - There's a single configuration file for all clusters named 'clusters.conf'.
+   It has to be present in the root of the configuration folder.
  - For each cluster you wish to manage:
   * add a section by editing /etc/vmcli/clusters.conf;
-  * create a directory for guests configuration files named 'guests' and a sub folder for each cluster using the same cluster name:
+  * create a directory for guests configuration files named 'guests' and a sub
+    folder for each cluster using the same cluster name:  
     /etc/vmcli/guests/production
  - Guest configuration file has the extension '.conf' (or it will be ignored).
  - In guest's configuration file you *must* set the option '-name'.
@@ -75,8 +80,10 @@ To reduce at the minimum the necessary configuration, you are bound to some conv
     
         --name debian
  
- - It has to be possible to connect to hosts by ssh *without specifying user or port* (see Cluster Setup).
- - 'socat'; 'parallel-ssh' and any other command used by the vmcli has to be in your user PATH.
+ - It has to be possible to connect to hosts by ssh *without specifying user or
+   port* (see Cluster Setup).
+ - 'socat'; 'parallel-ssh' and any other command used by the vmcli has to be in
+   your user PATH.
  - All hosts use the same qemy/kvm command.
 
 
@@ -92,7 +99,8 @@ Cluster Setup
 ==============
 
 ssh is at the base of this project.
-To simplify code and configuration we assume it's possible to connect to a cluster host by 'ssh hostname'.
+To simplify code and configuration we assume it's possible to connect to a
+cluster host by 'ssh hostname'.
 
 Create a pair of ssh keys:
 
@@ -116,7 +124,8 @@ Create an ssh_config file adding host configuration like this:
         IdentityFile ~/.ssh/id_rsa_vmcli
     ...
     
-Make sure you can login by ssh on all host *without* being asked for password or fingerprint before continuing.
+Make sure you can login by ssh on all host *without* being asked for password or
+fingerprint before continuing.
 
 Create the a cluster configuration file (see e"Examples" section).
 
@@ -150,7 +159,8 @@ link the vmcli to your path, you can run the command everywhere:
 
     ln -s /home/user/vmcli/vmcli.py /usr/local/bin
     
-You may whant to create an alias for the cluster you use the most (it may be just one).
+You may whant to create an alias for the cluster you use the most (it may be
+just one).
 
     alias vmcli='vmcli.py --cluster=production'
 
@@ -208,7 +218,8 @@ With a reverse dns you can get the host name from the ip address.
 
     45.2.168.192.in-addr.arpa       name = test005.
 
-If your vmcli is responding slowly, you are probably not able to resolve a host ip.
+If your vmcli is responding slowly, you are probably not able to resolve a
+host ip.
 You'll notice that pinging a host, requires lot's of time.
 
 (In the example below, it takes 3 second for 4 requests).
