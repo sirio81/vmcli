@@ -87,7 +87,7 @@ class Host:
         if out[0] == 0:
             processes = []
             for process in out[1].splitlines():
-                process = process.split('qemu-system-x86_64 ')[1].strip()
+                process = process.split(self.cluster_options['bin'])[1].strip()
                 processes.append(process)
             return processes
         else:
@@ -113,7 +113,6 @@ class Host:
         ssh_br_cmd = 'ssh -fN {} '.format(self.name)
         viewer = self.global_cluster_options['vncviewer']
         host_name = self.name
-        
         if self.guests is None:
             print('No guests running on', self.name)
             return 1
