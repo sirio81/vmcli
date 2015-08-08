@@ -11,25 +11,25 @@ import os
 
 h = '''
 Usage:
-  vmcli.py  [--conf=<path>] --cluster=<name> guest find <guest_name>
-  vmcli.py  [--conf=<path>] --cluster=<name> guest start <guest_name> [<host_name>]
-  vmcli.py  [--conf=<path>] --cluster=<name> guest start_and_show <guest_name> [<host_name>]
-  vmcli.py  [--conf=<path>] --cluster=<name> guest shutdown <guest_name>
-  vmcli.py  [--conf=<path>] --cluster=<name> guest kill <guest_name>
-  vmcli.py  [--conf=<path>] --cluster=<name> guest stop <guest_name>
-  vmcli.py  [--conf=<path>] --cluster=<name> guest cont <guest_name>
-  vmcli.py  [--conf=<path>] --cluster=<name> guest info <guest_name>
-  vmcli.py  [--conf=<path>] --cluster=<name> guest list
-  vmcli.py  [--conf=<path>] --cluster=<name> guest migrate <guest_name> <host_name>
-  vmcli.py  [--conf=<path>] --cluster=<name> guest show <guest_name>
-  vmcli.py  [--conf=<path>] --cluster=<name> host info <host_name>
-  vmcli.py  [--conf=<path>] --cluster=<name> host shutdown_guests <host_name>
-  vmcli.py  [--conf=<path>] --cluster=<name> host show_guests <host_name>
-  vmcli.py  [--conf=<path>] --cluster=<name> cluster info
-  vmcli.py  [--conf=<path>] --cluster=<name> cluster show
-  vmcli.py  [--conf=<path>] --cluster=<name> cluster show_guests
-  vmcli.py  [--conf=<path>] --cluster=<name> cluster poweroff
-  vmcli.py  [--conf=<path>] --cluster=<name> cluster shutdown_guests
+  vmcli.py --cluster=<name> guest find <guest_name>
+  vmcli.py --cluster=<name> guest start <guest_name> [<host_name>]
+  vmcli.py --cluster=<name> guest start_and_show <guest_name> [<host_name>]
+  vmcli.py --cluster=<name> guest shutdown <guest_name>
+  vmcli.py --cluster=<name> guest kill <guest_name>
+  vmcli.py --cluster=<name> guest stop <guest_name>
+  vmcli.py --cluster=<name> guest cont <guest_name>
+  vmcli.py --cluster=<name> guest info <guest_name>
+  vmcli.py --cluster=<name> guest list
+  vmcli.py --cluster=<name> guest migrate <guest_name> <host_name>
+  vmcli.py --cluster=<name> guest show <guest_name>
+  vmcli.py --cluster=<name> host info <host_name>
+  vmcli.py --cluster=<name> host shutdown_guests <host_name>
+  vmcli.py --cluster=<name> host show_guests <host_name>
+  vmcli.py --cluster=<name> cluster info
+  vmcli.py --cluster=<name> cluster show
+  vmcli.py --cluster=<name> cluster show_guests
+  vmcli.py --cluster=<name> cluster poweroff
+  vmcli.py --cluster=<name> cluster shutdown_guests
   vmcli.py  [-h | --help]
   vmcli.py  [--verions]
     
@@ -43,7 +43,20 @@ Options:
 
 if __name__ == '__main__':
     arg = docopt(h, version='0.8')
-    c = Cluster(os.path.join(arg['--conf']), arg['--cluster'])
+    
+    if os.path.isdir('conf'):
+        conf_path = 'conf'
+    elif os.path.isdir('~/.vmcli'):
+        conf_path = '~/.vmcli'
+    elif os.path.isdir('/etc/vmcli'):
+        conf_path = '/etc/vmcli'
+    else:
+        print('No configuration available')
+        sys.exit(2)
+        
+    print(conf_path)
+        
+    c = Cluster(conf_path, arg['--cluster'])
 
     if arg['guest']:
         if arg['find']:
