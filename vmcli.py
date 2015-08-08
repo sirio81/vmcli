@@ -23,6 +23,7 @@ Usage:
   vmcli.py --cluster=<name> guest migrate <guest_name> <host_name>
   vmcli.py --cluster=<name> guest show <guest_name>
   vmcli.py --cluster=<name> host info <host_name>
+  vmcli.py --cluster=<name> host list_running_guests <host_name>
   vmcli.py --cluster=<name> host shutdown_guests <host_name>
   vmcli.py --cluster=<name> host show_guests <host_name>
   vmcli.py --cluster=<name> cluster info
@@ -54,7 +55,6 @@ if __name__ == '__main__':
         print('No configuration available')
         sys.exit(2)
         
-    print(conf_path)
         
     c = Cluster(conf_path, arg['--cluster'])
 
@@ -97,6 +97,8 @@ if __name__ == '__main__':
             error('Host not valid')
         if arg['info']:
             print(c.hosts[arg['<host_name>']].info())
+        elif arg['list_running_guests']:
+            c.hosts[arg['<host_name>']].list_running_guests()
         elif arg['show_guests']:
             c.hosts[arg['<host_name>']].show_guests()
         elif arg['shutdown_guests']:
