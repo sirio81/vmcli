@@ -43,7 +43,7 @@ Options:
 
 
 if __name__ == '__main__':
-    arg = docopt(h, version='0.8')
+    arg = docopt(h, version='0.9.0')
     
     if os.path.isdir('conf'):
         conf_path = 'conf'
@@ -52,8 +52,7 @@ if __name__ == '__main__':
     elif os.path.isdir('/etc/vmcli'):
         conf_path = '/etc/vmcli'
     else:
-        print('No configuration available')
-        sys.exit(2)
+        error('No configuration available')
         
         
     c = Cluster(conf_path, arg['--cluster'])
