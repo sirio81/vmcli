@@ -19,7 +19,6 @@ Usage:
   vmcli.py --cluster=<name> guest stop <guest_name>
   vmcli.py --cluster=<name> guest cont <guest_name>
   vmcli.py --cluster=<name> guest info <guest_name>
-  vmcli.py --cluster=<name> guest list
   vmcli.py --cluster=<name> guest migrate <guest_name> <host_name>
   vmcli.py --cluster=<name> guest show <guest_name>
   vmcli.py --cluster=<name> host info <host_name>
@@ -29,8 +28,9 @@ Usage:
   vmcli.py --cluster=<name> cluster info
   vmcli.py --cluster=<name> cluster show
   vmcli.py --cluster=<name> cluster show_guests
-  vmcli.py --cluster=<name> cluster poweroff
+  vmcli.py --cluster=<name> cluster list_guests
   vmcli.py --cluster=<name> cluster shutdown_guests
+  vmcli.py --cluster=<name> cluster poweroff
   vmcli.py  [-h | --help]
   vmcli.py  [--verions]
     
@@ -89,8 +89,6 @@ if __name__ == '__main__':
         elif arg['show']:
             host_name = c.guest_find(arg['<guest_name>'])
             print('Guest not found') if host_name is None else c.hosts[host_name].guests[arg['<guest_name>']].show()
-        elif arg['list']:
-            print(c.list_guests())
     elif arg['host']:
         if arg['<host_name>'] not in c.hosts:
             error('Host not valid')
@@ -109,9 +107,12 @@ if __name__ == '__main__':
             print(c.show())
         if arg['show_guests']:
             print(c.show_guests())
-        if arg['poweroff']:
-            c.poweroff()
+        elif arg['list_guests']:
+            print(c.list_guests())
         if arg['shutdown_guests']:
             c.shutdown_guests()
+        if arg['poweroff']:
+            c.poweroff()
+
         
 
