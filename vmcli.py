@@ -103,15 +103,15 @@ if __name__ == '__main__':
     elif arg['cluster']:
         if arg['info']:
             print(c.info())
-        if arg['show']:
+        elif arg['show']:
             print(c.show())
-        if arg['show_guests']:
+        elif arg['show_guests']:
             print(c.show_guests())
         elif arg['list_guests']:
             print(c.list_guests())
-        if arg['shutdown_guests']:
+        elif arg['shutdown_guests']:
             c.shutdown_guests()
-        if arg['poweroff']:
+        elif arg['poweroff']:
             c.poweroff()
 
         
