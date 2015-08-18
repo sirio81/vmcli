@@ -1,6 +1,7 @@
 from libvmcli import *
 from libhost import Host
 from libhost import Guest
+import threading
 
 
 class Cluster:
@@ -281,7 +282,10 @@ class Cluster:
     def shutdown_guests(self):
         '''Shut down all cluster guests'''
         for host_name in self.hosts:
-            self.hosts[host_name].shutdown_guests()
+            t = threading.Thread(target=self.hosts[host_name].shutdown_guests())
+            t.daemon = True
+            t.start()
+            
 
 
     def guest_find(self, guest_name):
