@@ -54,7 +54,7 @@ class Cluster:
         parallel_ssh = 'parallel-ssh -h {} -o {} -e {} -t {} '.format(self.pssh['host_file'], self.pssh['out'], self.pssh['err'], self.pssh['timeout'])
         os.system('[ -d {0} ] && rm -r {0}; sync'.format((self.pssh['out'])))
         os.system('[ -d {0} ] && rm -r {0}; sync'.format((self.pssh['err'])))
-        cmd = ['cat /proc/cpuinfo', 'free -m', 'pgrep -fl qemu-system-x86_64 | grep -v bash', 'uptime']
+        cmd = ['cat /proc/cpuinfo', 'free -m', 'ps -ef | grep qemu-system-x86_64 | grep -v grep | grep -v bash', 'uptime']
         cmd = '"' + '; echo; '.join(cmd) + '"'
 
         cmd = parallel_ssh + cmd
